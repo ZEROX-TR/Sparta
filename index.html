@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS•R•T ⚡️ RITZ | Kingdom of Sparta 🩸</title>
+    <style>
+        :root {
+            --bg-dark: #07060b;
+            --card-glass: rgba(18, 15, 29, 0.85);
+            --neon-purple: #9d4edd;
+            --neon-pink: #ff2a6d;
+            --neon-gold: #ffd700;
+            --neon-cyan: #05d9e8;
+            --neon-red: #ff0055;
+            --text-main: #f0f3f8;
+            --border-glow: 0 0 15px rgba(157, 78, 221, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 35px rgba(157, 78, 221, 0.5);
+            margin-bottom: 20px;
+            background: #100b1e;
+        }
+
+        @media (min-width: 768px) {
+            .banner-container {
+                height: 380px;
+            }
+        }
+
+        .banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease, transform 0.5s ease;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7, 6, 11, 0.2) 0%, rgba(7, 6, 11, 0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .guild-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 42, 109, 0.2);
+            border: 1px solid var(--neon-pink);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: var(--neon-pink);
+            width: fit-content;
+            margin-bottom: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .banner-title {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fff, var(--neon-gold), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(157, 78, 221, 0.6);
+        }
+
+        @media (min-width: 768px) {
+            .banner-title {
+                font-size: 3rem;
+            }
+        }
+
+        .banner-subtitle {
+            font-size: 0.95rem;
+            color: #d1c4e9;
+            margin-top: 5px;
+        }
+
+        .controls-panel {
+            background: var(--card-glass);
+            border: 1px solid var(--neon-purple);
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .controls-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            color: #bbb;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            border: none;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255, 42, 109, 0.5);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #ffb703, var(--neon-gold));
+            color: #000;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(20, 16, 35, 0.8);
+            border: 1px solid var(--neon-purple);
+            padding: 12px 18px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .nav-btn {
+            background: var(--card-glass);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .tilt-card {
+            background: var(--card-glass);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            border-radius: 18px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--border-glow);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .tilt-card:hover {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 25px rgba(255, 42, 109, 0.4);
+        }
+
+        .card-header {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--neon-gold);
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .rank-list {
+            list-style: none;
+        }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            gap: 10px;
+        }
+
+        .rank-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .rank-title {
+            font-weight: 600;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .rank-user {
+            background: rgba(157, 78, 221, 0.2);
+            border: 1px solid var(--neon-purple);
+            padding: 4px 10px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            user-select: text;
+        }
+
+        .edit-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-gold);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            width: 140px;
+            outline: none;
+            text-align: center;
+        }
+
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rule-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-right: 4px solid var(--neon-purple);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .rule-item-warning {
+            border-right-color: var(--neon-gold);
+        }
+
+        .rule-item-temp {
+            border-right-color: var(--neon-pink);
+        }
+
+        .rule-item-perm {
+            border-right-color: var(--neon-red);
+        }
+
+        .alert-box {
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid var(--neon-red);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #ffb3c1;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #888;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="app-wrapper">
+
+        <div class="banner-container" id="bannerContainer">
+            <img id="guildBanner" class="banner-img" src="banner.jpg" alt="بنر النقابة">
+            <div class="banner-overlay">
+                <div class="guild-badge" id="levelDisplay">『ℋ💖 LEVEL 「...」 💖ℋ』</div>
+                <h1 class="banner-title">OS•R•T ⚡️ RITZ</h1>
+                <p class="banner-subtitle">بسم الله نبدأ وعلى الله نتوكل، اللهم سدد خطانا وانصرنا 🇵🇸</p>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <div class="control-group">
+                <button class="btn" onclick="document.getElementById('fileUpload').click()">📁 رفع بنر</button>
+                <input type="file" id="fileUpload" hidden accept="image/*">
+                <input type="text" id="urlInput" placeholder="رابط صورة..." style="background: rgba(255,255,255,0.08); border: 1px solid #555; border-radius: 8px; padding: 8px; color: #fff; width: 130px; font-size: 0.85rem;">
+                <button class="btn" style="background: var(--neon-cyan); color: #000;" onclick="loadUrlImage()">جلب</button>
+            </div>
+
+            <div class="control-group">
+                <input type="password" id="secretCode" placeholder="الكود السري..." style="background: rgba(255,255,255,0.08); border: 1px solid var(--neon-pink); border-radius: 8px; padding: 8px; color: #fff; width: 120px; text-align: center; font-size: 0.85rem;">
+                <button class="btn btn-gold" onclick="unlockEditMode()">🔓 وضع التعديل</button>
+                <button class="btn" style="background: #25D366; color: #000;" onclick="copyWhatsAppFormat()">📋 نسخ للواتساب</button>
+            </div>
+
+            <div class="control-group">
+                <label>السطوع:</label>
+                <input type="range" id="brightness" min="50" max="150" value="100" oninput="applyFilters()">
+                <label>الضبابية:</label>
+                <input type="range" id="blur" min="0" max="10" value="0" oninput="applyFilters()">
+                <button class="btn" style="background: #444;" onclick="resetDataAndStudio()">🔄 إعادة ضبط البيانات والبنر</button>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث عن عضو، رتبة، أو قانون..." oninput="filterContent()">
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="switchTab('ranksTab', this)">⛩️ الرتب والهيكل</button>
+            <button class="nav-btn" onclick="switchTab('rulesTab', this)">📜 قوانين مملكة سبارتا 🩸</button>
+            <button class="nav-btn" onclick="switchTab('rightsTab', this)">🛡️ الحقوق والتظلم</button>
+        </div>
+
+        <div id="ranksTab" class="tab-content active">
+            <div class="cards-grid" id="ranksGrid">
+                <!-- Ranks rendered dynamically via JavaScript -->
+            </div>
+        </div>
+
+        <div id="rulesTab" class="tab-content">
+            <!-- Warnings Section -->
+            <div class="tilt-card searchable-item">
+                <div class="card-header">
+                    <span>🔮 المخالفات (Warnings)</span>
+                    <span style="font-size: 0.8rem; color: var(--neon-gold);">توجيه وتنبيهات</span>
+                </div>
+                <ul class="rules-list">
+                    <li class="rule-item rule-item-warning">🧇 <strong>1:</strong> إرسال ثلاث ملصقات وراء بعض بشكل متكرر.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>2:</strong> ممنوع إرسال ست رسائل متتالية من دون فائدة.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>5:</strong> ممنوع استخدام أي تشفير أو فعل أي سبام (التحدث بلغة غير مفهومة).</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>6:</strong> ممنوع التكلم عن مواضيع تتعلق بالهنتاي أو الإيتشي.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>7:</strong> ممنوع ممارسة أي نوع من أنواع العنصرية مثال "يا مصري" "يا أسود".</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>8:</strong> ممنوع الإساءة لأية دولة أو طائفة دينية.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>9:</strong> ممنوع الاعتراض على قرارات المشرفين أو التدخل... إلا لو حسيت بنوع من الظلم أو العنصرية تجاهك، وقتها تقدر تكلم الرتب العليا لكي تتدخل.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>10:</strong> ممنوع طلب إشراف.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>11:</strong> ممنوع استخدام أي كلمات مسيئة مثل "عبد" "زنجي".</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>12:</strong> إرسال الصوتيات المزعجة أو العالية والأغاني + الفويس (للبنات فقط ممنوع).</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>13:</strong> ممنوع التحدث في مواضيع الحب والارتباط والزواج وما إلى ذلك.</li>
+                    <li class="rule-item rule-item-warning">🧇 <strong>14:</strong> إرسال صور بنات أو صور مخلة.</li>
+                </ul>
+            </div>
+
+            <!-- Temporary Ban Section -->
+            <div class="tilt-card searchable-item">
+                <div class="card-header">
+                    <span>⏳ أسباب الطرد المؤقت</span>
+                    <span style="font-size: 0.8rem; color: var(--neon-pink);">عقوبات انضباطية</span>
+                </div>
+                <ul class="rules-list">
+                    <li class="rule-item rule-item-temp">🍥 <strong>1:</strong> ممنوع الاتصال في أي نقابة.</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>2:</strong> حرق مانجا أو أنمي أو مانهوا إلخ...</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>3:</strong> إرسال إيموجي ~{😘😽😗😙😚💋👄🫦👅}~ لطرف آخر مثل بنت ترسل كذا لولد والعكس صحيح...</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>4:</strong> ممنوع استخدام { 🏳️‍🌈🏳‍⚧🇮🇱🖕💩👩‍❤️‍👨 }.</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>5:</strong> ممنوع السب أو الشتم بأي شكل من الأشكال.</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>6:</strong> التقطيم الذي يحتوي على احتكاك بين الجنسين (بدون شكل بنت أو ولد رموز تعبيرية).</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>7:</strong> الاحتكاك بين الجنسين بملصق أو كلام حتى لو كان مزح.</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>8:</strong> الدخول لبنت خاص دون إذنها [تستأذن بالأساسي من البنت].</li>
+                    <li class="rule-item rule-item-temp">🍥 <strong>9:</strong> إرسال صورة لك أو لأحد أصدقائك [البنات والأولاد].</li>
+                </ul>
+                <div class="alert-box">
+                    ⚠️ <strong>تحذير مهم:</strong> إذا تلقيت طردين متتاليين سيتم تحويل الطرد إلى طرد دائم فوراً!!
+                </div>
+            </div>
+
+            <!-- Permanent Ban Section -->
+            <div class="tilt-card searchable-item">
+                <div class="card-header">
+                    <span>🚨 قوانين الطرد المؤبد</span>
+                    <span style="font-size: 0.8rem; color: var(--neon-red);">الحظر النهائي</span>
+                </div>
+                <ul class="rules-list">
+                    <li class="rule-item rule-item-perm">🪭 <strong>1:</strong> ممنوع أن تكون بمملكة أخرى، دخولك إلى سبارتا يعني منع دخولك لأي مملكة أخرى!!</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>2:</strong> نشر روابط جروبات أخرى.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>3:</strong> إرسال أي صور أو مقاطع أو كلام +18.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>4:</strong> ممنوع تهديد الأعضاء بأي شكل من الأشكال.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>5:</strong> الإساءة بشكل مباشر أو غير مباشر.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>6:</strong> ممنوع افتعال المشاكل بشكل متعمد.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>7:</strong> ممنوع تفعيل بوت داخل النقابة.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>8:</strong> الاتصال بشكل متعمد على المجموعة.</li>
+                    <li class="rule-item rule-item-perm">🪭 <strong>9:</strong> ممنوع الدخول بنية التعرف للجنس الآخر.</li>
+                </ul>
+
+                <div class="alert-box" style="margin-top:20px; border-color: var(--neon-gold); color: #fff3b0;">
+                    <p style="margin-bottom:8px;"><strong>⚡️ سياسة تكرار الإنذارات والعقوبات الإدارية:</strong></p>
+                    <p>• إذا قمت بتكرار نفس المخالفة التي تلقيت عليها إنذاراً سابقاً، يحق للمشرف طردك طرداً مؤبداً دون أي تحذير إضافي.</p>
+                    <p>• <strong>3 إنذارات</strong> = طرد تأديبي لمدة 3 أيام.</p>
+                    <p>• <strong>3 مخالفات إدارية</strong> = إعفاء دائم من المناصب والإشراف.</p>
+                    <p style="margin-top:8px;">• <strong>قوانين إضافية:</strong> إذا لزم الأمر، يحق للمشرف اتخاذ إجراءات ضد أي سلوك غير مذكور بشكل صريح في القوانين الحالية لضمان بيئة آمنة للجميع.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="rightsTab" class="tab-content">
+            <div class="tilt-card searchable-item">
+                <div class="card-header">
+                    <span>🔮 ملاحظة التظلم والدعم الإداري</span>
+                    <span style="font-size: 0.8rem; color: var(--neon-cyan);">إدارة مملكة سبارتا</span>
+                </div>
+                <p style="line-height: 1.9; color: #d1c4e9; font-size: 0.95rem;">
+                    إذا أحسست بأي نوع من أنواع الظلم، العنصرية، التكبر، إلخ... تحدث فوراً مع الرتب العليا وسيتم حل المشكلة وسيتلقى المشرف العقوبة التي يستحقها.
+                </p>
+                <div style="margin-top: 15px; font-weight: bold; color: var(--neon-gold); text-align: center;">
+                    مع تحيات إدارة ┇ 紫 Kingdom of Sparta 🩸 ┇
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            جميع الحقوق محفوظة © OS•R•T ⚡️ RITZ — Kingdom of Sparta 🩸
+        </footer>
+
+    </div>
+
+    <script>
+        const SECRET_PASS = "¥0¥€";
+        let isEditUnlocked = false;
+
+        // Default Guild Data Structure
+        const defaultGuildData = {
+            level: "...",
+            founder_vice: "فارغ...",
+            sultan: "فارغ...",
+            sultan_vices: "...",
+            king: "فارغ...",
+            king_vice2: "...",
+            king_vice3: "...",
+            brigadier: "فارغ...",
+            title_manager: "فارغ...",
+            honor: "فارغ...",
+            newspaper: "...",
+            news: "..."
+        };
+
+        let guildData = { ...defaultGuildData };
+
+        // Load data from LocalStorage
+        function loadGuildData() {
+            try {
+                const savedData = localStorage.getItem('guildData_sparta');
+                if (savedData) {
+                    guildData = { ...defaultGuildData, ...JSON.parse(savedData) };
+                }
+            } catch (e) {
+                console.error("Failed to load guild data:", e);
+            }
+        }
+
+        // Save data to LocalStorage
+        function updateData(key, value) {
+            guildData[key] = value;
+            if (key === 'level') {
+                document.getElementById('levelDisplay').innerText = `『ℋ💖 LEVEL 「${value}」 💖ℋ』`;
+            }
+            try {
+                localStorage.setItem('guildData_sparta', JSON.stringify(guildData));
+            } catch (e) {
+                console.error("Failed to save guild data:", e);
+            }
+        }
+
+        const DEFAULT_BANNER = 'banner.jpg';
+        const bannerImg = document.getElementById('guildBanner');
+
+        bannerImg.onerror = function() {
+            this.onerror = null;
+            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400"><rect width="100%" height="100%" fill="%23100b1e"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%239d4edd" font-size="28" font-family="sans-serif">OS•R•T ⚡️ RITZ GUILD</text></svg>';
+        };
+
+        document.getElementById('fileUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxWidth = 1280;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                        bannerImg.src = compressedDataUrl;
+
+                        try {
+                            localStorage.setItem('savedBanner_sparta', compressedDataUrl);
+                        } catch (err) {
+                            console.warn('LocalStorage limit exceeded:', err);
+                        }
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function loadUrlImage() {
+            let url = document.getElementById('urlInput').value.trim();
+            if (!url) {
+                alert('الرجاء إدخال رابط صورة صحيح.');
+                return;
+            }
+            if (url.startsWith('http://')) {
+                url = url.replace('http://', 'https://');
+            }
+            bannerImg.src = url;
+            try {
+                localStorage.setItem('savedBanner_sparta', url);
+            } catch (err) {}
+        }
+
+        function resetDataAndStudio() {
+            if (confirm("هل أنت تأكد من إرجاع كافة البيانات والأسماء والبنر إلى الحالة الافتراضية؟")) {
+                guildData = { ...defaultGuildData };
+                try {
+                    localStorage.removeItem('guildData_sparta');
+                    localStorage.removeItem('savedBanner_sparta');
+                } catch (e) {}
+                bannerImg.src = DEFAULT_BANNER;
+                document.getElementById('brightness').value = 100;
+                document.getElementById('blur').value = 0;
+                applyFilters();
+                renderRanks();
+                alert('🔄 تم إعادة الضبط بنجاح!');
+            }
+        }
+
+        function applyFilters() {
+            const b = document.getElementById('brightness').value;
+            const blur = document.getElementById('blur').value;
+            bannerImg.style.filter = `brightness(${b}%) blur(${blur}px)`;
+        }
+
+        function unlockEditMode() {
+            const pass = document.getElementById('secretCode').value.trim();
+            if (pass === SECRET_PASS) {
+                isEditUnlocked = true;
+                alert('🔓 تم فتح وضع التعديل بنجاح! سيتم حفظ أي اسم تقوم بتغييره دائمياً.');
+                renderRanks();
+            } else {
+                alert('❌ الكود السري غير صحيح!');
+            }
+        }
+
+        function renderRanks() {
+            document.getElementById('levelDisplay').innerText = `『ℋ💖 LEVEL 「${guildData.level}」 💖ℋ』`;
+            const container = document.getElementById('ranksGrid');
+
+            const makeField = (key, val) => {
+                if (isEditUnlocked) {
+                    return `<input class="edit-input" value="${val}" oninput="updateData('${key}', this.value)">`;
+                }
+                return `«${val}»`;
+            };
+
+            container.innerHTML = `
+                <div class="tilt-card searchable-item">
+                    <div class="card-header">
+                        <span>⚔️ الرتب المؤسسة</span>
+                        <span style="font-size: 0.8rem; color: var(--neon-pink);">الإدارة العليا</span>
+                    </div>
+                    <ul class="rank-list">
+                        <li class="rank-item"><span class="rank-title">レベル المستوى</span><span class="rank-user">${makeField('level', guildData.level)}</span></li>
+                        <li class="rank-item"><span class="rank-title">♚ المؤسس</span><span class="rank-user">«مايكي🪐»</span></li>
+                        <li class="rank-item"><span class="rank-title">♔ نائب المؤسس</span><span class="rank-user">${makeField('founder_vice', guildData.founder_vice)}</span></li>
+                        <li class="rank-item"><span class="rank-title">🏰 اللورد</span><span class="rank-user">«سوب🍁ارو»</span></li>
+                        <li class="rank-item"><span class="rank-title">🕌 السلطان</span><span class="rank-user">${makeField('sultan', guildData.sultan)}</span></li>
+                        <li class="rank-item"><span class="rank-title">♘ نواب السلطان</span><span class="rank-user">${makeField('sultan_vices', guildData.sultan_vices)}</span></li>
+                    </ul>
+                </div>
+
+                <div class="tilt-card searchable-item">
+                    <div class="card-header">
+                        <span>🔱 الرتب الملكية</span>
+                        <span style="font-size: 0.8rem; color: var(--neon-cyan);">مجلس العرش</span>
+                    </div>
+                    <ul class="rank-list">
+                        <li class="rank-item"><span class="rank-title">❊ الملك</span><span class="rank-user">${makeField('king', guildData.king)}</span></li>
+                        <li class="rank-item"><span class="rank-title">❊ نائب الملك (1)</span><span class="rank-user">«أكي🛍️را»</span></li>
+                        <li class="rank-item"><span class="rank-title">❊ نائب الملك (2)</span><span class="rank-user">${makeField('king_vice2', guildData.king_vice2)}</span></li>
+                        <li class="rank-item"><span class="rank-title">❊ نائب الملك (3)</span><span class="rank-user">${makeField('king_vice3', guildData.king_vice3)}</span></li>
+                    </ul>
+                </div>
+
+                <div class="tilt-card searchable-item">
+                    <div class="card-header">
+                        <span>🏔️ الرتب النقابية والعسكرية</span>
+                        <span style="font-size: 0.8rem; color: var(--neon-gold);">القيادة الميدانية</span>
+                    </div>
+                    <ul class="rank-list">
+                        <li class="rank-item"><span class="rank-title">⚓️ الادميرال</span><span class="rank-user">«ﯾـ👹ـو نـا»</span></li>
+                        <li class="rank-item"><span class="rank-title">❄️ نائب الادميرال</span><span class="rank-user">«هـ⚔️ـاك»</span></li>
+                        <li class="rank-item"><span class="rank-title">🏅 العميد</span><span class="rank-user">${makeField('brigadier', guildData.brigadier)}</span></li>
+                        <li class="rank-item"><span class="rank-title">🔥 تشيبوكاي</span><span class="rank-user">«دوم🎼 🚶🏻‍♂️»</span></li>
+                        <li class="rank-item"><span class="rank-title">⭐️ ملازمين</span><span class="rank-user">«ساسـ🪄ـكي»</span></li>
+                        <li class="rank-item"><span class="rank-title">🌪️ حامل بيرق</span><span class="rank-user">«اثانـ🌷ـاسيا 🌸 الـ✨ـيا»</span></li>
+                        <li class="rank-item"><span class="rank-title">🚩 حامل راية</span><span class="rank-user">«فلاـ🔮ـوري»</span></li>
+                        <li class="rank-item"><span class="rank-title">🛟 مشرف متدرب</span><span class="rank-user">«يـ❄️ـوتا ¤ ها 🪶 نا ¤ كيـ🌊ـلوا»</span></li>
+                    </ul>
+                </div>
+
+                <div class="tilt-card searchable-item">
+                    <div class="card-header">
+                        <span>🏅 الألقاب والتكريمات</span>
+                        <span style="font-size: 0.8rem; color: var(--neon-pink);">التميز الإداري</span>
+                    </div>
+                    <ul class="rank-list">
+                        <li class="rank-item"><span class="rank-title">⌘ مسؤول الألقاب</span><span class="rank-user">${makeField('title_manager', guildData.title_manager)}</span></li>
+                        <li class="rank-item"><span class="rank-title">🎉 العضو VIP</span><span class="rank-user">«سونغ»</span></li>
+                        <li class="rank-item"><span class="rank-title">👑 ملك الاستقبال</span><span class="rank-user">«أكاي»</span></li>
+                        <li class="rank-item"><span class="rank-title">🏅 تكريم خاص</span><span class="rank-user">${makeField('honor', guildData.honor)}</span></li>
+                        <li class="rank-item"><span class="rank-title">👑 ملك التفاعل</span><span class="rank-user">«أليا»</span></li>
+                        <li class="rank-item"><span class="rank-title">👑 ملك الفعاليات</span><span class="rank-user">«اليا»</span></li>
+                        <li class="rank-item"><span class="rank-title">👑 ملك النشر</span><span class="rank-user">«أكاي»</span></li>
+                        <li class="rank-item"><span class="rank-title">🏆 المشرف الذهبي</span><span class="rank-user">«أكاي»</span></li>
+                        <li class="rank-item"><span class="rank-title">⚠️ المشرف المتخاذل</span><span class="rank-user">«تشوسو»</span></li>
+                    </ul>
+                </div>
+
+                <div class="tilt-card searchable-item">
+                    <div class="card-header">
+                        <span>🌐 الروابط المخصصة</span>
+                        <span style="font-size: 0.8rem; color: var(--neon-cyan);">خدمات النقابة</span>
+                    </div>
+                    <ul class="rank-list">
+                        <li class="rank-item"><span class="rank-title">📰 الصحيفة</span><span class="rank-user">${makeField('newspaper', guildData.newspaper)}</span></li>
+                        <li class="rank-item"><span class="rank-title">📢 الإعلانات</span><span class="rank-user">${makeField('news', guildData.news)}</span></li>
+                        <li class="rank-item"><span class="rank-title">🏦 البنك</span><span class="rank-user">«البنك»</span></li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function copyWhatsAppFormat() {
+            const text = `.✧═════ ﴿بسم الله الرحمن الرحيم﴾ ═════✧.
+
+بسم الله نبدأ وعلى الله نتوكل، اللهم سدد خطانا وانصرنا 🇵🇸
+
+✧ 『ℋ༯ LEVEL 「${guildData.level}」 ༯ℋ』 ✧
+
+🖤✧ S•R•T ⚡️ℰ RITZ ✧
+
+✧•✧───┼⚔️ الرتب المؤسسة ⚔️┼───✧•✧
+
+♚ ↩ َر المؤسس 🚶🏻‍♂️ 「مـايـ🪐ـكي」
+♔ ↩ َر نائب المؤسس 🚶🏻‍♂️ 「${guildData.founder_vice}」
+🏰 ↩ َر الـلـورد 🚶🏻‍♂️ 「سوبـ🍁ـارو」
+🕌 ↩ َر الـسـلطان 🚶🏻‍♂️ 「${guildData.sultan}」
+♘ ↩ َر نواب السـلطان 🚶🏻‍♂️ 「${guildData.sultan_vices}」
+
+✧•✧───┼🔱 الرتب الملكية 🔱┼───✧•✧
+
+❊ ↩ َر ﴿الملك﴾ ૣ 『${guildData.king}』
+❊ ↩ َر ﴿نواب الملك﴾ ૣ 『أكي🛍️را』 『${guildData.king_vice2}』 『${guildData.king_vice3}』
+
+✧•✧───┼🏔️ الرتب النقابية 🏔️┼───✧•✧
+
+❂═════⚙️} الادميرال ⚓️ {⚙️═════❂
+💭 ↩ َر ﯾـ👹ـو نـا
+
+❂═════⚙️} نائب الادميرال ❄️ {⚙️═════❂
+🌸 ↩ َر هـ⚔️ـاك
+
+❂═════⚙️} العميد 🏅 {⚙️═════❂
+✨ ↩ َر ${guildData.brigadier}
+
+❂═════⚙️} تشيبوكاي 🔥 {⚙️═════❂
+💫 ↩ َر دوم🎼 🚶🏻‍♂️
+
+❂═════⚙️} ملازمين ⭐️ {⚙️═════❂
+🌟 ↩ َر ساسـ🪄ـكي
+
+❂═════⚙️} حامل بيرق 🌪️ {⚙️═════❂
+🌸 ↩ َر اثانـ🌷ـاسيا 🌸 الـ✨ـيا
+
+❂═════⚙️} حامل راية 🚩 {⚙️═════❂
+🔮 ↩ َر فلاـ🔮ـوري
+
+❂═════⚙️} مشرف متدرب 🛟 {⚙️═════❂
+🌊 ↩ َر يـ❄️ـوتا ¤ ها 🪶 نا ¤ كيـ🌊ـلوا
+
+⌘───⚡️───⌘
+
+⌘ ↩ َر مسؤول الألقاب ، 「${guildData.title_manager}」
+
+⌘───⚡️───⌘
+
+⌘ ↩ َر العضو vip ↩ 「سونغ」 🎉
+⌘ ↩ َر ملك الاستقبال ، 「أكاي」 👑
+⌘ ↩ َر تكريم خاص ، 「${guildData.honor}」 🏅
+⌘ ↩ َر ملك التفاعل ، 「أليا」 👑
+⌘ ↩ َر ملك الفعاليات ، 「اليا」 👑
+⌘ ↩ َر ملك النشر ، 「أكاي」 👑
+⌘ ↩ َر المشرف الذهبي ، 「أكاي」 🏆
+⌘ ↩ َر المشرف المتخاذل ، 「تشوسو」 ⚠️
+
+⌘───⚡️───⌘
+
+⌘ ↩ َر روابط مخصصة ، 🌐
+
+📰صحـnewspaperـيفة📰
+| ${guildData.newspaper} |
+
+📢الإعلـNewsـانات📢
+| ${guildData.news} |
+
+🏦البـBankـنك🏦`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✨ تم نسخ النص المنسق بالكامل بحافظتك للجاهزية للصق في الواتساب!');
+            });
+        }
+
+        // Particle Canvas logic
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = Math.random() > 0.5 ? '#9d4edd' : '#ff2a6d';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                for (let j = index + 1; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x;
+                    const dy = p.y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 90) {
+                        ctx.strokeStyle = `rgba(157, 78, 221, ${1 - dist / 90})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function switchTab(tabId, btnEl) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(nb => nb.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btnEl.classList.add('active');
+        }
+
+        function filterContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.searchable-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadGuildData();
+            renderRanks();
+            try {
+                const savedBanner = localStorage.getItem('savedBanner_sparta');
+                if (savedBanner) bannerImg.src = savedBanner;
+            } catch (e) {}
+        });
+    </script>
+</body>
+</html>
